@@ -82,7 +82,6 @@ class UserController extends Controller
            ]);
        }else{
            $user = User::where('email', $request->email)->first();
-//           return  response()->json(['entered'=>Hash::make($request->password) , 'db'=> $user->password], 200);
            if ($user){
                if (Hash::check($request->password, $user->password)){
                    $request->session()->put('loggedInUser', $user->id);
@@ -158,9 +157,23 @@ public function profile(){
            'gender' => $request->gender,
            'dob' => $request->dob,
            'phone' => $request->phone,
+           'marital_status_id' => $request->marital_status,
+           'estate_id' => $request->estate,
+           'cell_group_id' => $request->cell_group,
+           'employment_status_id' => $request->employment_status,
+           'born_again_id' => $request->born_again,
+           'leadership_status_id' => $request->leadership_status,
+           'ministry_id' => $request->ministry,
+           'occupation_id' => $request->occupation,
+           'education_level_id' => $request->education_level,
         ]);
 
-        return response()->json([
+//        return response()->json([
+//            'status'=>200,
+//            'messages'=>'Profile updated successfully!',
+//        ]);
+
+        return redirect()->route('profile')->with([
             'status'=>200,
             'messages'=>'Profile updated successfully!',
         ]);
@@ -209,11 +222,46 @@ public function profile(){
 
     //handle reset password
     public function resetPassword(Request $request){
-        return response()->json(['npassword'=>$request->npassword, 'cnpassword'=>$request->cnpassword]);
-        $validator = Validator::make($request->all([
+        $validator = Validator::make($request->all(),[
             'npassword'=>'required|min:6|max:50',
             'cnpassword'=>'required|min:6|max:50:same:npassword',
-        ]));
+
+        ],[
+            'cnpassword.same'=>'Password did not match!'
+        ]);
+
+        if ($validator->fails()){
+            return response()->json([
+                'status'=>400,
+                'messages'=>$validator->getMessageBag()
+            ]);
+        }else{
+            $user = DB::table('users')
+                ->where('email', $request->email)
+                ->whereNotNull('token')
+                ->where('token', $request->token)
+                ->where('token_expire', '>', Carbon::now())
+                ->exists();
+            if ($user){
+                User::where('email', $request->email)
+                    ->update([
+                        'password'=>Hash::make($request->password),
+                        'token'=>null,
+                        'token_expire'=>null,
+                    ]);
+                return response()->json([
+
+                    'status'=>200,
+                    'messages'=>'New password updated;&nbsp;<a href="/">Login Now</a>',
+                ]);
+            }else{
+                return response()->json([
+                   'status'=>4001,
+                   'messages'=>'Reset link expired! Request for a new reset password link'
+                ]);
+            }
+
+        }
     }
 
 }

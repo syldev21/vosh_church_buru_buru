@@ -10,6 +10,7 @@
                         <h2 class="fw-bold text-secondary">Reset Password</h2>
                     </div>
                     <div class="card-body p-5">
+                        <div id="reset_alert"></div>
                         <form action="#" method="POST" id="reset_form">
                             @csrf
                             <input type="hidden" name="email" value="{{$email}}">
@@ -26,8 +27,6 @@
                                 <input type="password" name="cnpassword" id="cnpassword" class="form-control rounded-0" placeholder="Confirm New Password">
                                 <div class="invalid-feedback"></div>
                             </div>
-
-
 
                             <div class="mb-3 d-grid">
                                 <input type="submit" value="Update Password" class="btn btn-dark rounded-0" id="reset_button">
@@ -57,9 +56,21 @@
                     url: '{{route('auth.reset')}}',
                     method: 'POST',
                     data: $(this).serialize(),
-                    // dataType: 'json',
+                    dataType: 'json',
                     success: function (res) {
-                        console.log(res);
+                        if (res.status == 400){
+                            showError('npassword', res.messages.npassword)
+                            showError('cnpassword', res.messages.cnpassword)
+                            $('#reset_button').val('Update Password')
+                        }else if (res.status == 401){
+                            $('#reset_alert').html(showMessage('danger', res.messages));
+                            removeValidationClasses('#reset_form');
+                            $('#reset_button').val('Reset Password');
+                        }else{
+                            $('#reset_form')[0].reset();
+                            $('#reset_alert').html(showMessage('success', res.messages))
+                            $('#reset_button').val('Reset Password');
+                        }
                     }
                 });
             })

@@ -28,5 +28,11 @@ Route::group(['middleware'=>['LoginCheck']], function (){
     Route::get('logout', [\App\Http\Controllers\UserController::class, 'logout'])->name('auth.logout');
     Route::get('/profile',[\App\Http\Controllers\UserController::class, 'profile'])->name('profile');
     Route::post('profile-image', [\App\Http\Controllers\UserController::class, 'profileImageUpdate'])->name('profile.image');
+    Route::post('profile-edit', [\App\Http\Controllers\UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('profile-update', [\App\Http\Controllers\UserController::class, 'profileUpdate'])->name('profile.update');
+});
+
+
+Route::get('dashboard', function (){
+   return view('sidebar');
 });
