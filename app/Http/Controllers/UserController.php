@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -70,6 +71,7 @@ class UserController extends Controller
     }
     //handle login user ajax request
     public function loginUser(Request $request){
+
        $validator = Validator::make($request->all(), [
            'email' =>'required|email|max:100',
            'password' =>'required|min:6|max:100',

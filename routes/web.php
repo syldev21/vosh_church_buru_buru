@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,9 +31,19 @@ Route::group(['middleware'=>['LoginCheck']], function (){
     Route::post('profile-image', [\App\Http\Controllers\UserController::class, 'profileImageUpdate'])->name('profile.image');
     Route::post('profile-edit', [\App\Http\Controllers\UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('profile-update', [\App\Http\Controllers\UserController::class, 'profileUpdate'])->name('profile.update');
+
+//    Route::group(['middleware'=>['IsAdmin']], function (){
+        Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->middleware('IsAdmin');
+//    });
 });
 
+//    Route::prefix('admin')->middleware(['LoginCheck', 'IsAdmin'])->group(function (){
+//        Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
+//    });
 
 Route::get('dashboard', function (){
-   return view('sidebar');
+   dd(Auth::user());
 });
+
+
+
