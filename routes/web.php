@@ -37,13 +37,22 @@ Route::group(['middleware'=>['LoginCheck']], function (){
 //    });
 });
 
-//    Route::prefix('admin')->middleware(['LoginCheck', 'IsAdmin'])->group(function (){
-//        Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
-//    });
+// Route::group(['middleware'=>['IsAdmin']], function (){
+//     Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->middleware('IsAdmin');
+// });
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index']);
 
-Route::get('dashboard', function (){
-   dd(Auth::user());
-});
+    Route::get('all-members', function(){
+
+        // $members = User::all();
+        return view('admin.church-members');
+    });
+
+    Route::get('cell-group', function(){
+
+        // $members = User::all();
+        return view('admin.church-members');
+    });
 
 
 
