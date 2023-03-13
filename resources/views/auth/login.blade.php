@@ -70,7 +70,7 @@
                         $('#login_alert').html(showMessage('danger', res.message));
                         $('#login_button').val('Login');
                        }else {
-                           if (res.status == 200 && res.messages == 'Success'){
+                           if (res.status === 200 && res.messages === 'Success'){
                                window.location = '{{ route('profile') }}';
                            }
                        }
